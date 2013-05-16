@@ -46,11 +46,12 @@ if ($response['version']=="1.0") {
 			$entrylink = htmlentities($entry["link"][0]['href']);
 
 			//			$post_content 		= ($entry['content']['$t']);
+			$post_content = '';
 			$title 				= $entry['title']['$t'];
 
 			$author = $entry['author'][0]['name']['$t'];
 			$authorurl = $entry['author'][0]['uri']['$t'];
-			$thumbnail = $entry['media$thumbnail'][0]['url'];
+			$thumbnail = (isset($entry['media$thumbnail'])) ? $entry['media$thumbnail'][0]['url'] : '';
 			$video_id = 0;
 			if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $entrylink, $match)) {
 				$video_id = $match[1];
@@ -78,7 +79,7 @@ if ($response['version']=="1.0") {
 			$item->setLink($entrylink);
 			$item->setDescription($post_content);
 			$item->addElement('guid', $entrylink, array('isPermaLink'=>'true'));
-			$item->addElement('category', $entry['board']);
+			if (isset($entry['board'])) $item->addElement('category', $entry['board']);
 
 			//nach bildern suchen und enclosen
 			$articleimage = "";

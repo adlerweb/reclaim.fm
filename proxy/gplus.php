@@ -52,7 +52,7 @@ if ($response['kind']=="plus#activityFeed") {
 			$extracted_title = (preg_match( "/<b>(.*?)<\/b>/",$post_content, $matches));
 			$post_content = (preg_replace( "/<b>(.*?)<\/b>/", "",$post_content));
 			$post_content = (preg_replace( "/\A<br \/><br \/>/", "",$post_content));
-			$extracted_title = $matches[1];
+			$extracted_title = (isset($matches[1])) ? $matches[1] : '';
 			if ($extracted_title=="") {$extracted_title = $title;}
 			//			print_r($matches);
 			//			$extracted_title = str_replace( $url['url'], '<a href="'.$url['expanded_url'].'">'.$url['display_url'].'</a>', $post_content );
@@ -69,7 +69,7 @@ if ($response['kind']=="plus#activityFeed") {
 			if ($embedcode) {
 				//			print_r($entry['object']['attachments'][0]);
 				//attachments
-				if ($entry['object']['attachments'][0]['objectType']=="photo") {
+				if (isset( $entry['object']['attachments']) && $entry['object']['attachments'][0]['objectType']=="photo") {
 					$post_content = '
 				<div class="gimage gplus"><a href="'.$entry['object']['attachments'][0]['url'].'">
 				<img src="'.$entry['object']['attachments'][0]['image']['url'].'" alt="'.$entry['object']['attachments'][0]['content'].'">
@@ -78,7 +78,7 @@ if ($response['kind']=="plus#activityFeed") {
 				}
 			}
 
-			if (($entry['object']['attachments'][0]['objectType'] == "article") AND ($entry['object']['attachments'][0]['content']!="")) {
+			if (isset( $entry['object']['attachments']) && ($entry['object']['attachments'][0]['objectType'] == "article") AND ($entry['object']['attachments'][0]['content']!="")) {
 				//				echo "article ";
 				$articleimage = $entry['object']['attachments'][0]['image']['url'];
 				$articleimage_html = '<div class="gplusimage"><img src="'.$entry['object']['attachments'][0]['image']['url'].'" alt="" class="gpreview-img attachment articleimage"></div>';
@@ -87,7 +87,7 @@ if ($response['kind']=="plus#activityFeed") {
 				<h3 class="garticle attachment"><a href="'.$entry['object']['attachments'][0]['url'].'">'.$entry['object']['attachments'][0]['displayName'].'</a></h3>
 				'.$entry['object']['attachments'][0]['content'].'</blockquote>';
 			}
-			if ($entry['object']['attachments'][0]['objectType'] == "video") {
+			if (isset( $entry['object']['attachments']) && $entry['object']['attachments'][0]['objectType'] == "video") {
 				$post_content = '<div class="gimage gplus video"><a href="'.$entry['object']['attachments'][0]['url'].'"><img src="'.$entry['object']['attachments'][0]['image']['url'].'" alt="'.$entry['object']['attachments'][0]['displayName'].'"></a></div>'.'<div class="gcontent gplus">'.$post_content.'</div>';
 			}
 
@@ -99,14 +99,14 @@ if ($response['kind']=="plus#activityFeed") {
 			$item->setLink($entrylink);
 			$item->setDescription($post_content);
 			$item->addElement('guid', $entrylink, array('isPermaLink'=>'true'));
-			$item->addElement('category', $entry['board']);
+			if(isset($entry['board'])) $item->addElement('category', $entry['board']);
 
 			//nach bildern suchen und enclosen
-			if ($entry['object']['attachments'][0]['image']['url']) {
+			if (isset( $entry['object']['attachments']) && $entry['object']['attachments'][0]['image']['url']) {
 				//  				$item->setEncloser(urlencode($entry['object']['attachments'][0]['image']['url']), 500, $entry['object']['attachments'][0]['image']['type']);
 				$item->addElement('gplusimage', $entry['object']['attachments'][0]['image']['url'], '');
 
-				if ($entry['object']['attachments'][0]['fullImage']['url']) {
+				if (isset( $entry['object']['attachments'][0]['fullImage']) && $entry['object']['attachments'][0]['fullImage']['url']) {
 					//	  				$item->setEncloser(urlencode($entry['object']['attachments'][0]['fullImage']['url']), 500, $entry['object']['attachments'][0]['fullImage']['type']);
 					$item->addElement('gplusimage', $entry['object']['attachments'][0]['fullImage']['url'], '');
 				}
