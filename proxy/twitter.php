@@ -74,7 +74,7 @@ array(
 						}
 						$image_url = "";
 						$image_html = "";
-						if ( count( $entry['entities']['media'] ) ) {
+						if ( isset($entry['entities']['media']) && count( $entry['entities']['media'] ) ) {
 							foreach ( $entry['entities']['media'] as $media ) {
 								$post_content = str_replace( $media['url'], '<a href="'.$media['expanded_url'].'">'.$media['display_url'].'</a>', $post_content );
 								if ($media['type']=="photo") {
