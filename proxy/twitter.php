@@ -10,7 +10,7 @@ $tmhOAuth = new tmhOAuth($twitter_oauth_setting);
 $lang = "de";
 $count = 20;
 $user = $twitter_user;
-$apiurl = "http://api.twitter.com/1.1/statuses/user_timeline.json";
+$apiurl = "https://api.twitter.com/1.1/statuses/user_timeline.json";
 $embedcode = true;
 
 $tmhOAuth->request(
